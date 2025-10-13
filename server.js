@@ -238,5 +238,62 @@ app.get('/api/registrations', async (req, res) => {
   }
 });
 
+app.post('/api/registrations', async (req, res) => {
+  const {
+    event_id,
+    full_name,
+    email,
+    phone = '',
+    num_tickets = 1,
+    ticket_id = null,
+    contact_address = ''
+  } = req.body;
+
+  if (!event_id || !full_name || !email) {
+    return res.status(400).json({ error: 'Missing required fields: event_id, full_name, email' });
+  }
+
+  const conn = await pool.promise().getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const [eventRows] = await conn.query(
+      'SELECT id FROM events WHERE id = ? AND suspended = FALSE',
+      [event_id]
+    );
+    if (eventRows.length === 0) {
+      throw { status: 404, message: 'Event not found or suspended' };
+    }
+
+    const [existing] = await conn.query(
+      'SELECT id FROM registrations WHERE event_id = ? AND email = ? LIMIT 1',
+      [event_id, email]
+    );
+    if (existing.length > 0) {
+      throw { status: 409, message: 'You have already registered for this event with this email.' };
+    }
+
+    const [result] = await conn.query(
+      `INSERT INTO registrations (event_id, full_name, email, phone, num_tickets, ticket_id, contact_address)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [event_id, full_name, email, phone, num_tickets, ticket_id, contact_address]
+    );
+
+    await conn.commit();
+    res.status(201).json({ id: result.insertId, message: 'Registration successful!' });
+  } catch (err) {
+    await conn.rollback();
+    console.error('Registration error:', err);
+    if (err.status) {
+      res.status(err.status).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: err.message || 'Internal server error' });
+    }
+  } finally {
+    conn.release();
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}`));
