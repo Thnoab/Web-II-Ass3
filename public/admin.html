@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    main {
+      background: #ffffff;
+      margin: 40px 0;
+      padding: 30px 40px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 1000px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #1c3fa8;
+      margin: 0;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: 0.2s;
+      font-weight: bold;
+    }
+
+    #logoutBtn {
+      background: #dc3545;
+      color: white;
+    }
+    #logoutBtn:hover {
+      background: #b02a37;
+    }
+
+    #showAddForm {
+      background: #198754;
+      color: white;
+      margin-top: 10px;
+    }
+    #showAddForm:hover {
+      background: #146c43;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #007bff;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    /* 按钮颜色 */
+    .edit-btn {
+      background: #ffc107;
+      color: #212529;
+    }
+    .edit-btn:hover {
+      background: #e0a800;
+    }
+
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+    }
+    .delete-btn:hover {
+      background: #bb2d3b;
+    }
+
+    /* 表单容器 */
+    .form-container {
+      margin-top: 30px;
+      padding: 25px;
+      background: #fdfdfd;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-container h2 {
+      margin-top: 0;
+      color: #1c3fa8;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    #saveBtn {
+      background: #007bff;
+      color: white;
+      margin-right: 10px;
+    }
+    #saveBtn:hover {
+      background: #0056b3;
+    }
+
+    #cancelBtn {
+      background: #6c757d;
+      color: white;
+    }
+    #cancelBtn:hover {
+      background: #5a6268;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="topbar">
+      <h1>Admin Dashboard</h1>
+      <button id="logoutBtn">Logout</button>
+    </div>
+
+    <section id="eventSection">
+      <h2>Event List</h2>
+      <button id="showAddForm">+ Add New Event</button>
+      <table id="eventTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Goal</th>
+            <th>Progress</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="addFormSection" class="form-container hidden">
+      <h2 id="formTitle">Add New Event</h2>
+      <form id="eventForm">
+        <input type="hidden" id="eventId">
+        <label>Name:</label>
+        <input type="text" id="name" required>
+
+        <label>Short Description:</label>
+        <input type="text" id="short_description">
+
+        <label>Description:</label>
+        <textarea id="description"></textarea>
+
+        <label>Location:</label>
+        <input type="text" id="location">
+
+        <label>Date:</label>
+        <input type="date" id="date">
+
+        <label>Start Time:</label>
+        <input type="time" id="start_time">
+
+        <label>Price:</label>
+        <input type="number" id="price" step="0.01">
+
+        <label>Goal:</label>
+        <input type="number" id="goal" step="0.01">
+
+        <label>Progress:</label>
+        <input type="number" id="progress" step="0.01">
+
+        <label>Category ID:</label>
+        <input type="number" id="category_id">
+
+        <label>Organization ID:</label>
+        <input type="number" id="org_id">
+
+        <label>Image URL:</label>
+        <input type="text" id="image_url">
+
+        <button type="submit" id="saveBtn">Save</button>
+        <button type="button" id="cancelBtn">Cancel</button>
+      </form>
+
+      <div id="regListSection" class="hidden" style="margin-top:16px;">
+        <h3>Registrations for this event</h3>
+        <table id="regTable">
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Tickets</th>
+              <th>Registered At</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="categorySection" class="form-container">
+      <h2>Category Management</h2>
+      <div style="margin-bottom:10px;">
+        <button id="showCatAddForm">+ Add Category</button>
+      </div>
+      <table id="categoryTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div id="catFormWrap" class="hidden" style="margin-top:16px;">
+        <h3 id="catFormTitle">Add Category</h3>
+        <form id="categoryForm">
+          <input type="hidden" id="catId">
+          <label>Name:</label>
+          <input type="text" id="catName" required>
+          <button type="submit" id="catSaveBtn">Save</button>
+          <button type="button" id="catCancelBtn">Cancel</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,7 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/yqin14/public_html/Assessment3"
+PassengerBaseURI "/Assessment3"
+PassengerNodejs "/home/yqin14/nodevenv/public_html/Assessment3/18/bin/node"
+PassengerAppType node
+PassengerStartupFile server.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
